@@ -5,6 +5,10 @@
 #include "config.h"
 #include "tileson.h"
 
+void DrawNineSlice(Texture2D texture, Rectangle totalSize, float borderSize);
+
+void DrawNineSliceDebug(Rectangle totalSize, float borderSize);
+
 int main() {
     // Raylib initialization
     // Project name, screen size, fullscreen mode etc. can be specified in the config.h.in file
@@ -21,6 +25,7 @@ int main() {
     // ...
     Texture2D myTexture = LoadTexture("assets/graphics/testimage.png");
     Texture2D closeButton = LoadTexture("assets/graphics/closebutton.png");
+    Texture2D nineSlice = LoadTexture("assets/graphics/nineslice.png");
     tson::Tileson tileson;
     auto MapPtr = tileson.parse("assets/data/tilemap.tmj");
     tson::Map &Map = *MapPtr;
@@ -118,6 +123,17 @@ int main() {
         }
         EndMode2D();
 
+        //9-Slice segment
+        if (IsKeyDown(KEY_NINE)){
+            Rectangle destRecs[9] = {};
+            Rectangle totalSize = {0,0, (float)GetMouseX(), (float)GetMouseY()};
+            if (IsTextureReady(nineSlice)){
+                DrawNineSlice(nineSlice, totalSize, nineSlice.width);}
+            else{
+            DrawNineSliceDebug(totalSize, 48);}
+        }
+
+        // Draw a close button
         if (GetMouseX() > GetScreenWidth() - 48 && GetMouseY() < 48) {
             DrawTexture(closeButton, GetScreenWidth() - 48, 0, WHITE);
         }
@@ -135,4 +151,102 @@ int main() {
     CloseWindow();
 
     return EXIT_SUCCESS;
+}
+
+void DrawNineSliceDebug(Rectangle totalSize, float borderSize) {
+    DrawRectangleLinesEx( //top left
+            {totalSize.x, totalSize.y, borderSize, borderSize},
+            2, RED
+            );
+    DrawRectangleLinesEx( //top center
+            {totalSize.x + borderSize, totalSize.y, totalSize.width - borderSize * 2, borderSize},
+            2, ORANGE
+            );
+    DrawRectangleLinesEx( //top right
+            {totalSize.x + totalSize.width - borderSize, totalSize.y, borderSize, borderSize},
+            2, YELLOW
+            );
+    DrawRectangleLinesEx( //center left
+            {totalSize.x, totalSize.y + borderSize, borderSize, totalSize.height - borderSize * 2},
+            2, GREEN
+            );
+    DrawRectangleLinesEx( //center center
+            {totalSize.x + borderSize, totalSize.y + borderSize, totalSize.width - borderSize * 2, totalSize.height - borderSize * 2},
+            2, BLUE
+            );
+    DrawRectangleLinesEx( //center right
+            {totalSize.x + totalSize.width - borderSize, totalSize.y + borderSize, borderSize, totalSize.height - borderSize * 2},
+            2, DARKBLUE
+            );
+    DrawRectangleLinesEx( //bottom left
+            {totalSize.x, totalSize.y + totalSize.height - borderSize, borderSize, borderSize},
+            2, PURPLE
+            );
+    DrawRectangleLinesEx( //bottom center
+            {totalSize.x + borderSize, totalSize.y + totalSize.height - borderSize, totalSize.width - borderSize * 2, borderSize},
+            2, VIOLET
+            );
+    DrawRectangleLinesEx( //bottom right
+            {totalSize.x + totalSize.width - borderSize, totalSize.y + totalSize.height - borderSize, borderSize, borderSize},
+            2, MAGENTA
+            );
+
+}
+
+void DrawNineSlice(Texture2D texture, Rectangle totalSize, float borderSize) {
+    float textureBlockSize = texture.width / 3;
+    DrawTexturePro( //top left
+            texture,
+            {0, 0, textureBlockSize, textureBlockSize},
+            {totalSize.x, totalSize.y, borderSize, borderSize},
+            {0, 0},0, WHITE
+            );
+    DrawTexturePro( //top center
+            texture,
+            {textureBlockSize, 0, textureBlockSize, textureBlockSize},
+            {totalSize.x + borderSize, totalSize.y, totalSize.width - borderSize * 2, borderSize},
+            {0, 0},0, WHITE
+            );
+    DrawTexturePro( //top right
+            texture,
+            {textureBlockSize * 2, 0, textureBlockSize, textureBlockSize},
+            {totalSize.x + totalSize.width - borderSize, totalSize.y, borderSize, borderSize},
+            {0, 0},0, WHITE
+            );
+    DrawTexturePro( //center left
+            texture,
+            {0, textureBlockSize, textureBlockSize, textureBlockSize},
+            {totalSize.x, totalSize.y + borderSize, borderSize, totalSize.height - borderSize * 2},
+            {0, 0},0, WHITE
+            );
+    DrawTexturePro( //center center
+            texture,
+            {textureBlockSize, textureBlockSize, textureBlockSize, textureBlockSize},
+            {totalSize.x + borderSize, totalSize.y + borderSize, totalSize.width - borderSize * 2, totalSize.height - borderSize * 2},
+            {0, 0},0, WHITE
+            );
+    DrawTexturePro( //center right
+            texture,
+            {textureBlockSize * 2, textureBlockSize, textureBlockSize, textureBlockSize},
+            {totalSize.x + totalSize.width - borderSize, totalSize.y + borderSize, borderSize, totalSize.height - borderSize * 2},
+            {0, 0},0, WHITE
+            );
+    DrawTexturePro( //bottom left
+            texture,
+            {0, textureBlockSize * 2, textureBlockSize, textureBlockSize},
+            {totalSize.x, totalSize.y + totalSize.height - borderSize, borderSize, borderSize},
+            {0, 0},0, WHITE
+            );
+    DrawTexturePro( //bottom center
+            texture,
+            {textureBlockSize, textureBlockSize * 2, textureBlockSize, textureBlockSize},
+            {totalSize.x + borderSize, totalSize.y + totalSize.height - borderSize, totalSize.width - borderSize * 2, borderSize},
+            {0, 0},0, WHITE
+            );
+    DrawTexturePro( //bottom right
+            texture,
+            {textureBlockSize * 2, textureBlockSize * 2, textureBlockSize, textureBlockSize},
+            {totalSize.x + totalSize.width - borderSize, totalSize.y + totalSize.height - borderSize, borderSize, borderSize},
+            {0, 0},0, WHITE
+            );
 }
