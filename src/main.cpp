@@ -91,7 +91,7 @@ int main() {
                             if (IsKeyDown(KEY_I)) {
                                 std::string text = std::to_string(data);
                                 float width = MeasureText(text.c_str(), 30);
-                                DrawRectangle(x * tileSize * scale - 1, y * tileSize * scale, width + 2, 30, IsKeyDown(KEY_LEFT_SHIFT) ? WHITE : BLACK);
+                                DrawRectangle(x * tileSize * scale - 4, y * tileSize * scale, width + 8, 30, IsKeyDown(KEY_LEFT_SHIFT) ? WHITE : BLACK);
                                 DrawText(std::to_string(data).c_str(), x * tileSize * scale, y * tileSize * scale, 30,
                                          IsKeyDown(KEY_LEFT_SHIFT) ? BLACK : WHITE);
                             }
@@ -99,10 +99,14 @@ int main() {
                     }
                 }
             }
+            //draw a box around the map
+            DrawRectangleLinesEx(
+                    {-16,-16, Map.getSize().x * tileSize * scale + 32, Map.getSize().y * tileSize * scale + 32},
+                    16, IsKeyDown(KEY_LEFT_SHIFT) ? BLACK : WHITE
+                    );
             //end of map drawing
 
             if (IsKeyDown(KEY_G)) {
-
                 for (int y = 0; y < Map.getSize().y; ++y) {
                     for (int x = 0; x < Map.getSize().x; ++x) {
                         Color gridColor = ColorAlpha(IsKeyDown(KEY_LEFT_SHIFT) ? BLACK : WHITE, 0.5f);
