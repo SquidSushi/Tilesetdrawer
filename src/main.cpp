@@ -7,8 +7,6 @@
 
 void DrawNineSlice(Texture2D texture, Rectangle totalSize, float borderSize);
 
-void DrawNineSliceDebug(Rectangle totalSize, float borderSize);
-
 int main() {
     // Raylib initialization
     // Project name, screen size, fullscreen mode etc. can be specified in the config.h.in file
@@ -125,12 +123,10 @@ int main() {
 
         //9-Slice segment
         if (IsKeyDown(KEY_NINE)){
+            DrawRectangle(0,0,GetScreenWidth(), GetScreenHeight(), ColorAlpha(BLACK, 0.8f));
             Rectangle destRecs[9] = {};
             Rectangle totalSize = {0,0, (float)GetMouseX(), (float)GetMouseY()};
-            if (IsTextureReady(nineSlice)){
-                DrawNineSlice(nineSlice, totalSize, nineSlice.width);}
-            else{
-            DrawNineSliceDebug(totalSize, 48);}
+                DrawNineSlice(nineSlice, totalSize, nineSlice.width);
         }
 
         // Draw a close button
@@ -153,45 +149,6 @@ int main() {
     return EXIT_SUCCESS;
 }
 
-void DrawNineSliceDebug(Rectangle totalSize, float borderSize) {
-    DrawRectangleLinesEx( //top left
-            {totalSize.x, totalSize.y, borderSize, borderSize},
-            2, RED
-            );
-    DrawRectangleLinesEx( //top center
-            {totalSize.x + borderSize, totalSize.y, totalSize.width - borderSize * 2, borderSize},
-            2, ORANGE
-            );
-    DrawRectangleLinesEx( //top right
-            {totalSize.x + totalSize.width - borderSize, totalSize.y, borderSize, borderSize},
-            2, YELLOW
-            );
-    DrawRectangleLinesEx( //center left
-            {totalSize.x, totalSize.y + borderSize, borderSize, totalSize.height - borderSize * 2},
-            2, GREEN
-            );
-    DrawRectangleLinesEx( //center center
-            {totalSize.x + borderSize, totalSize.y + borderSize, totalSize.width - borderSize * 2, totalSize.height - borderSize * 2},
-            2, BLUE
-            );
-    DrawRectangleLinesEx( //center right
-            {totalSize.x + totalSize.width - borderSize, totalSize.y + borderSize, borderSize, totalSize.height - borderSize * 2},
-            2, DARKBLUE
-            );
-    DrawRectangleLinesEx( //bottom left
-            {totalSize.x, totalSize.y + totalSize.height - borderSize, borderSize, borderSize},
-            2, PURPLE
-            );
-    DrawRectangleLinesEx( //bottom center
-            {totalSize.x + borderSize, totalSize.y + totalSize.height - borderSize, totalSize.width - borderSize * 2, borderSize},
-            2, VIOLET
-            );
-    DrawRectangleLinesEx( //bottom right
-            {totalSize.x + totalSize.width - borderSize, totalSize.y + totalSize.height - borderSize, borderSize, borderSize},
-            2, MAGENTA
-            );
-
-}
 
 void DrawNineSlice(Texture2D texture, Rectangle totalSize, float borderSize) {
     float textureBlockSize = texture.width / 3;
@@ -249,4 +206,9 @@ void DrawNineSlice(Texture2D texture, Rectangle totalSize, float borderSize) {
             {totalSize.x + totalSize.width - borderSize, totalSize.y + totalSize.height - borderSize, borderSize, borderSize},
             {0, 0},0, WHITE
             );
+}
+
+Mesh Gen9SliceMesh(){
+    Mesh output = GenMeshPlane(1,1,3,3);
+    output.texcoords
 }
