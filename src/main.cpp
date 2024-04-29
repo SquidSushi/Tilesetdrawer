@@ -208,7 +208,3 @@ void DrawNineSlice(Texture2D texture, Rectangle totalSize, float borderSize) {
             );
 }
 
-Mesh Gen9SliceMesh(){
-    Mesh output = GenMeshPlane(1,1,3,3);
-    output.texcoords
-}
