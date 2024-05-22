@@ -7,6 +7,8 @@
 
 void DrawNineSlice(Texture2D texture, Rectangle totalSize, float borderSize);
 
+
+
 int main() {
     // Raylib initialization
     // Project name, screen size, fullscreen mode etc. can be specified in the config.h.in file
@@ -21,19 +23,19 @@ int main() {
     // Your own initialization code here
     // ...
     // ...
+    Camera2D cam = {};
+    cam.zoom = 1.0f;
     Texture2D myTexture = LoadTexture("assets/graphics/testimage.png");
     Texture2D closeButton = LoadTexture("assets/graphics/closebutton.png");
     Texture2D nineSlice = LoadTexture("assets/graphics/nineslice.png");
     tson::Tileson tileson;
     auto MapPtr = tileson.parse("assets/data/tilemap.tmj");
-    tson::Map &Map = *MapPtr;
-    Camera2D cam = {};
-    cam.zoom = 1.0f;
-
-
+    tson::Map& Map = *MapPtr;
     if (Map.getStatus() != tson::ParseStatus::OK) {
         std::cout << "Failed to parse map, error: " << Map.getStatusMessage() << std::endl;
     }
+
+
     float scale = GetScreenWidth() / 16 / Map.getTileSize().x;
     // Main game loop
     while (!WindowShouldClose()) // Detect window close button or ESC key
@@ -72,8 +74,9 @@ int main() {
             bgColor.b = Map.getBackgroundColor().b;
             ClearBackground(bgColor);
             //start of map drawing
+
             const int tileSize = Map.getTileSize().x;
-            const int currentFrame = int(GetTime() * 6) % 4;
+            const int currentFrame = int(GetTime() * 30) % 4;
             for (const auto &layer: Map.getLayers()) {
                 if (layer.getType() == tson::LayerType::TileLayer) {
                     for (int y = 0; y < layer.getSize().y; ++y) {
@@ -102,6 +105,38 @@ int main() {
                     }
                 }
             }
+
+            /*
+            auto layer = Map.getLayer("Kachelebene 1")->getData();
+            float tileWidth = 16;
+            int tileSetColumns = 16;
+            for (int y = 0; y < Map.getSize().y; ++y) {
+                //break;
+                for (int x = 0; x < Map.getSize().x; ++x) {
+                    auto originalData = layer[y * Map.getSize().x + x]; //get int tileID from x y coordinates
+                    //tileID &= 0x0FFF; //remove flip flags of fetched tileID
+                    int tileID = originalData & 0x0FFFFFFF; //tileson tileID is 1-indexed
+                    tileID--; //tileson tileID is 1-indexed
+                    if (tileID < 0){
+                        continue;
+                    }
+                    tson::TileFlipFlags isFlipped = Map.getLayer("Kachelebene 1")->getTileData(x,y)->getFlipFlags();
+
+                    Rectangle source = {
+                            (float)(tileID % tileSetColumns) * tileWidth, //c-style cast
+                            (float)(tileID / tileSetColumns) * tileWidth,
+                            isFlipped == (tson::TileFlipFlags)tson::FLIPPED_HORIZONTALLY_FLAG || isFlipped == (tson::TileFlipFlags)tson::FLIPPED_DIAGONALLY_FLAG ? -tileWidth : tileWidth,
+                            isFlipped == (tson::TileFlipFlags)tson::FLIPPED_VERTICALLY_FLAG || isFlipped == (tson::TileFlipFlags)tson::FLIPPED_DIAGONALLY_FLAG ? -tileWidth : tileWidth
+                    };
+                    Rectangle dest{
+                            (float)x * tileWidth,(float)y * tileWidth,tileWidth,tileWidth
+                    };
+                    DrawTexturePro(myTexture,source,dest,{},0,WHITE);
+                }
+            }
+             */
+
+
             //draw a box around the map
             DrawRectangleLinesEx(
                     {-16,-16, Map.getSize().x * tileSize * scale + 32, Map.getSize().y * tileSize * scale + 32},
